@@ -1,6 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { colors, spacing, typography, borderRadius } from "@/constants/theme";
+import { View, Text, Pressable, Appearance } from "react-native";
+import {
+  lightColors,
+  darkColors,
+  spacing,
+  typography,
+  borderRadius,
+} from "@/constants/theme";
 
 interface Props {
   children: React.ReactNode;
@@ -20,27 +26,61 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("ErrorBoundary caught:", error, info);
-  }
-
   render() {
     if (this.state.hasError) {
+      const scheme = Appearance.getColorScheme();
+      const colors = scheme === "dark" ? darkColors : lightColors;
+
       return (
-        <View style={styles.container}>
-          <Text style={styles.emoji}>⚠️</Text>
-          <Text style={styles.title}>Something went wrong</Text>
-          <Text style={styles.message}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: colors.background,
+            padding: spacing.xl,
+          }}
+        >
+          <Text style={{ fontSize: 48, marginBottom: spacing.md }}>⚠️</Text>
+          <Text
+            style={{
+              ...typography.h2,
+              color: colors.text,
+              marginBottom: spacing.sm,
+              textAlign: "center",
+            }}
+          >
+            Something went wrong
+          </Text>
+          <Text
+            style={{
+              ...typography.body,
+              color: colors.textSecondary,
+              textAlign: "center",
+              marginBottom: spacing.xl,
+            }}
+          >
             An unexpected error occurred. Please try again.
           </Text>
-          <View style={styles.button}>
+          <Pressable
+            onPress={() => this.setState({ hasError: false })}
+            style={{
+              backgroundColor: colors.primary,
+              paddingVertical: spacing.sm,
+              paddingHorizontal: spacing.lg,
+              borderRadius: borderRadius.md,
+            }}
+          >
             <Text
-              style={styles.buttonText}
-              onPress={() => this.setState({ hasError: false })}
+              style={{
+                color: colors.textInverted,
+                fontSize: 16,
+                fontWeight: "600",
+              }}
             >
               Try Again
             </Text>
-          </View>
+          </Pressable>
         </View>
       );
     }
@@ -48,40 +88,3 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return this.props.children;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.background,
-    padding: spacing.xl,
-  },
-  emoji: {
-    fontSize: 48,
-    marginBottom: spacing.md,
-  },
-  title: {
-    ...typography.h2,
-    color: colors.text,
-    marginBottom: spacing.sm,
-    textAlign: "center",
-  },
-  message: {
-    ...typography.body,
-    color: colors.textSecondary,
-    textAlign: "center",
-    marginBottom: spacing.xl,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.md,
-  },
-  buttonText: {
-    color: colors.textInverted,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-});

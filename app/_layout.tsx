@@ -8,7 +8,7 @@ function RootStack() {
 
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="auto" />
       <Stack
         screenOptions={{
           headerShown: true,
